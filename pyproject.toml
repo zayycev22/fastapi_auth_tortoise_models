@@ -1,6 +1,16 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-regex-commit"]
 build-backend = "hatchling.build"
+
+[tool.hatch]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.version]
+source = "regex_commit"
+commit_extra_args = ["-e"]
+path = "fastapi_auth_tortoise_models/__init__.py"
 
 [project]
 name = "fastapi_auth_tortoise_models"
@@ -20,7 +30,7 @@ dependencies = [
     "aiosqlite",
     "typing-extensions",
     "tortoise-orm",
-    "fastapi_auth >= 0.0.1"
+    "auth_fastapi >= 0.0.1"
 ]
 description = "Tortoise repositories and models for fastapi-auth library"
 requires-python = ">=3.10"
