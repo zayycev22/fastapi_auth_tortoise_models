@@ -2,9 +2,8 @@ from typing import Type, Optional
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
 from fastapi_auth.exceptions import UserAlreadyExists
-from fastapi_auth.models import user_model
 from fastapi_auth.repositories import BaseTokenRepository, BaseUserRepository
-from fastapi_auth.tortoise_models.models import Token, BaseUser
+from fastapi_auth_tortoise_models.models import Token, BaseUser
 
 
 class TokenRepository(BaseTokenRepository[Token]):
