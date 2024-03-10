@@ -1,4 +1,4 @@
-from typing import Type, Optional, Any
+from typing import Type, Optional, Any, Iterable
 from tortoise.models import MODEL
 from fastapi_auth.models import AbstractToken, AbstractBaseUser, ExternalBaseModel
 from tortoise import fields, Model, BaseDBAsyncClient
@@ -6,16 +6,21 @@ from fastapi_auth.signals.signal import main_signal
 
 
 class ExModel(Model, ExternalBaseModel):
+    id = fields.IntField(pk=True)
 
-    async def save(self, created: bool = False, **kwargs) -> None:
-        await super().save(**kwargs)
+    async def save(self, created: bool = False, using_db: Optional[BaseDBAsyncClient] = None,
+                   update_fields: Optional[Iterable[str]] = None,
+                   force_create: bool = False,
+                   force_update: bool = False, ) -> None:
+        await super().save(using_db=using_db, update_fields=update_fields, force_update=force_update,
+                           force_create=force_create)
         return await main_signal.emit_after_save(instance=self, created=created)
 
     @classmethod
     async def create(cls: Type[MODEL], using_db: Optional[BaseDBAsyncClient] = None, **kwargs: Any
                      ) -> MODEL:
-        instance = await super().create(cls, using_db=using_db, **kwargs)
-        await main_signal.emit_after_save(instance=instance, created=True)
+        instance = await super().create(using_db=using_db, **kwargs)
+        await main_signal.emit_after_save(instance, created=True)
         return instance
 
     class Meta:
@@ -31,16 +36,19 @@ class BaseUser(Model, AbstractBaseUser):
 
     USERNAME_FIELD = ""
 
-    async def save(self, created: bool = False, **kwargs) -> None:
-        await super().save(**kwargs)
+    async def save(self, created: bool = False, using_db: Optional[BaseDBAsyncClient] = None,
+                   update_fields: Optional[Iterable[str]] = None,
+                   force_create: bool = False,
+                   force_update: bool = False, ) -> None:
+        await super().save(using_db=using_db, update_fields=update_fields, force_update=force_update,
+                           force_create=force_create)
         return await main_signal.emit_after_save(instance=self, created=created)
 
     @classmethod
-    async def create(
-            cls: Type[MODEL], using_db: Optional[BaseDBAsyncClient] = None, **kwargs: Any
-    ) -> MODEL:
-        instance = await super().create(cls, using_db=using_db, **kwargs)
-        await main_signal.emit_after_save(instance=instance, created=True)
+    async def create(cls: Type[MODEL], using_db: Optional[BaseDBAsyncClient] = None, **kwargs: Any
+                     ) -> MODEL:
+        instance = await super().create(using_db=using_db, **kwargs)
+        await main_signal.emit_after_save(instance, created=True)
         return instance
 
     class Meta:
