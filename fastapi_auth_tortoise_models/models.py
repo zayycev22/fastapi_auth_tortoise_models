@@ -8,13 +8,13 @@ from fastapi_auth.signals.signal import main_signal
 class ExModel(Model, ExternalBaseModel):
 
     async def save(self, created: bool = False, **kwargs) -> None:
-        await super().save()
+        await super().save(**kwargs)
         return await main_signal.emit_after_save(instance=self, created=created)
 
     @classmethod
     async def create(cls: Type[MODEL], using_db: Optional[BaseDBAsyncClient] = None, **kwargs: Any
                      ) -> MODEL:
-        instance = await super().create()
+        instance = await super().create(cls, using_db=using_db, **kwargs)
         await main_signal.emit_after_save(instance=instance, created=True)
         return instance
 
@@ -32,14 +32,14 @@ class BaseUser(Model, AbstractBaseUser):
     USERNAME_FIELD = ""
 
     async def save(self, created: bool = False, **kwargs) -> None:
-        await super().save()
+        await super().save(**kwargs)
         return await main_signal.emit_after_save(instance=self, created=created)
 
     @classmethod
     async def create(
             cls: Type[MODEL], using_db: Optional[BaseDBAsyncClient] = None, **kwargs: Any
     ) -> MODEL:
-        instance = await super().create()
+        instance = await super().create(cls, using_db=using_db, **kwargs)
         await main_signal.emit_after_save(instance=instance, created=True)
         return instance
 
@@ -75,7 +75,7 @@ class Token(Model, AbstractToken):
     async def save(self, created: bool = False, **kwargs) -> None:
         if not self.key:
             self.key = self.generate_key()
-        await super().save()
+        await super().save(**kwargs)
         return await main_signal.emit_after_save(instance=self, created=created)
 
     @classmethod
