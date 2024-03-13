@@ -30,7 +30,7 @@ class ExModel(Model, ExternalBaseModel):
 class BaseUser(Model, AbstractBaseUser):
     id = fields.IntField(pk=True)
     password = fields.CharField(max_length=128)
-    is_active = fields.BooleanField(default=False)
+    is_active = fields.BooleanField(default=True)
     is_superuser = fields.BooleanField(default=False)
     time_created = fields.DatetimeField(auto_now_add=True)
 
