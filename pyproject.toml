@@ -19,7 +19,6 @@ authors = [
     { name = "zayycev22" },
 ]
 classifiers = [
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -31,7 +30,7 @@ dependencies = [
     "aiosqlite",
     "typing-extensions",
     "tortoise-orm",
-    "auth_fastapi >= 0.2.0"
+    "auth_fastapi >= 0.2.3"
 ]
 description = "Tortoise repositories and models for fastapi-auth library"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
