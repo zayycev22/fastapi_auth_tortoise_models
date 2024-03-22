@@ -12,6 +12,7 @@ class ExModel(Model, ExternalBaseModel):
                    update_fields: Optional[Iterable[str]] = None,
                    force_create: bool = False,
                    force_update: bool = False, ) -> None:
+        await main_signal.emit_before_save(instance=self)
         await super().save(using_db=using_db, update_fields=update_fields, force_update=force_update,
                            force_create=force_create)
         return await main_signal.emit_after_save(instance=self, created=created)
@@ -40,6 +41,7 @@ class BaseUser(Model, AbstractBaseUser):
                    update_fields: Optional[Iterable[str]] = None,
                    force_create: bool = False,
                    force_update: bool = False, ) -> None:
+        await main_signal.emit_before_save(instance=self)
         await super().save(using_db=using_db, update_fields=update_fields, force_update=force_update,
                            force_create=force_create)
         return await main_signal.emit_after_save(instance=self, created=created)
@@ -83,6 +85,7 @@ class Token(Model, AbstractToken):
     async def save(self, created: bool = False, **kwargs) -> None:
         if not self.key:
             self.key = self.generate_key()
+        await main_signal.emit_before_save(instance=self)
         await super().save(**kwargs)
         return await main_signal.emit_after_save(instance=self, created=created)
 
